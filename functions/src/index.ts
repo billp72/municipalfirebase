@@ -38,7 +38,7 @@ export const residentLevel = functions.https.onCall(async(request, response) => 
   return user;
 });
 
-export const getCustomClaim = functions.https.onCall(async(request, response) => {
-  const operatorUser = await admin.auth().getUser(request.uid);
+export const getCustomClaim = functions.https.onCall(async(data, context) => {
+  const operatorUser = await admin.auth().getUser(data.uid);
   return operatorUser.customClaims;
 })
