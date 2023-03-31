@@ -21,7 +21,7 @@ export const adminLevel = functions.https.onCall(async(request, response) => {
   const claims = administer.municipality = request.municipality;
   await auth.setCustomUserClaims(request.uid,  claims);
   const user:any = await auth.getUser(request.uid);
-  db.collection('users').doc('/'+user.customClaims['municipality']+'/').update({[request.uid]:{
+  db.collection('users').doc('/'+user['municipality']+'/').update({[request.uid]:{
     ...request
   }})
   return user;
@@ -32,7 +32,7 @@ export const residentLevel = functions.https.onCall(async(request, response) => 
   const claims = resident.municipality = request.municipality;
   await auth.setCustomUserClaims(request.uid,  claims);
   const user:any = await auth.getUser(request.uid)
-  db.collection('users').doc('/'+user.customClaims['municipality']+'/').update({[request.uid]:{
+  db.collection('users').doc('/'+user['municipality']+'/').update({[request.uid]:{
     ...request
   }})
   return user;
