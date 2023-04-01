@@ -17,28 +17,34 @@ const resident = {
   municipality: ""
 }
 export const adminLevel = functions.https.onCall(async(request, response) => {
-  //functions.logger.info("Hello logs!", {structuredData: true});
-  const claims = administer.municipality = request.municipality;
-  await auth.setCustomUserClaims(request.uid,  claims);
-  const user:any = await auth.getUser(request.uid);
-  db.collection('users').doc('/'+user['municipality']+'/').update({[request.uid]:{
+  administer.municipality = request.municipality;
+  
+  await auth.setCustomUserClaims(request.uid,  administer);
+  const user:any = await auth.getUser(request.uid)
+  const municipal = user['customClaims']['municipality'];
+  const docref = db.collection('users').doc(municipal);
+  docref.set({[request.uid]:{
     ...request
-  }})
+  }}, {merge:true})
+
   return user;
 });
 
 export const residentLevel = functions.https.onCall(async(request, response) => {
-  //functions.logger.info("Hello logs!", {structuredData: true});
-  const claims = resident.municipality = request.municipality;
-  await auth.setCustomUserClaims(request.uid,  claims);
+  resident.municipality = request.municipality;
+
+  await auth.setCustomUserClaims(request.uid,  resident);
   const user:any = await auth.getUser(request.uid)
-  db.collection('users').doc('/'+user['municipality']+'/').update({[request.uid]:{
+  const municipal = user['customClaims']['municipality'];
+  const docref = db.collection('users').doc(municipal);
+  docref.set({[request.uid]:{
     ...request
-  }})
+  }}, {merge:true})
+
   return user;
 });
 
 export const getCustomClaim = functions.https.onCall(async(data, context) => {
   const operatorUser = await admin.auth().getUser(data.uid);
-  return operatorUser.customClaims;
+  return operatorUser?.customClaims || "";
 })
