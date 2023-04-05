@@ -23,6 +23,7 @@ export const adminLevel = functions.https.onCall(async(request, response) => {
   const user:any = await auth.getUser(request.uid)
   const municipal = user['customClaims']['municipality'];
   const docref = db.collection('users').doc(municipal);
+  request.admin = true;
   docref.set({[request.uid]:{
     ...request
   }}, {merge:true})
@@ -37,6 +38,7 @@ export const residentLevel = functions.https.onCall(async(request, response) => 
   const user:any = await auth.getUser(request.uid)
   const municipal = user['customClaims']['municipality'];
   const docref = db.collection('users').doc(municipal);
+  request.admin = false;
   docref.set({[request.uid]:{
     ...request
   }}, {merge:true})
