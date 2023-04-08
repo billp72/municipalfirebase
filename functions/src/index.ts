@@ -77,5 +77,7 @@ export const getUserAlerts = functions.https.onCall(async (data, context) => {
       }
     }
   }
+  if(all.length > 0) all.unshift({date: {}});
+
   return all;
 });
