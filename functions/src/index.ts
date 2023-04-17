@@ -77,7 +77,24 @@ export const getUserAlerts = functions.https.onCall(async (data, context) => {
       }
     }
   }
-  if(all.length > 0) all.unshift({date: {}});
+  if (all.length > 0) all.unshift({ date: {} });
 
   return all;
+});
+
+export const addAlerts = functions.https.onCall(async (data, context) => {
+  const database: any = db.collection("topics");
+  const d = data.data;
+    for(let i=0; i<d.length; i++){
+      const docref = database.doc(d[i].type);
+      docref.set(
+        {
+          [d[i].uid]: {
+            ...d[i],
+          },
+        },
+        { merge: true }
+      );
+    }
+    return true;
 });
