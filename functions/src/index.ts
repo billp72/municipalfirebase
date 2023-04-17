@@ -107,11 +107,11 @@ export const addAlerts = functions.https.onCall(async (data, context) => {
 export const checkAlerts = functions.https.onCall(async (data, context) => {
   const database: any = db.collection("topics");
   const docref = database.doc(data.type);
-  try{
-    const res = await docref.get();
-    const d = docref.data();
+  const res = await docref.get();
     if(res.exists){
-      if(data["uid"] in d){
+      const d = res.data();
+      console.log(d);
+      if(data.uid in d){
         return false;
       }else{
         return true;
@@ -119,8 +119,10 @@ export const checkAlerts = functions.https.onCall(async (data, context) => {
     }else{
       return true;
     }
-  }catch(e){
-    return false;
-  }
+  // try{
+    
+  // }catch(e){
+  //   return false;
+  // }
 
 });
