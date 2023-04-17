@@ -119,10 +119,4 @@ export const checkAlerts = functions.https.onCall(async (data, context) => {
     }else{
       return true;
     }
-  // try{
-    
-  // }catch(e){
-  //   return false;
-  // }
-
 });
