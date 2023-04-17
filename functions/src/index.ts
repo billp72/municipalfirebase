@@ -85,6 +85,7 @@ export const getUserAlerts = functions.https.onCall(async (data, context) => {
 export const addAlerts = functions.https.onCall(async (data, context) => {
   const database: any = db.collection("topics");
   const d = data.data;
+  try{
     for(let i=0; i<d.length; i++){
       const docref = database.doc(d[i].type);
       docref.set(
@@ -97,4 +98,29 @@ export const addAlerts = functions.https.onCall(async (data, context) => {
       );
     }
     return true;
+  }catch(e){
+    return false;
+  }
+  
+});
+
+export const checkAlerts = functions.https.onCall(async (data, context) => {
+  const database: any = db.collection("topics");
+  const docref = database.doc(data.type);
+  try{
+    const res = await docref.get();
+    const d = docref.data();
+    if(res.exists){
+      if(data["uid"] in d){
+        return false;
+      }else{
+        return true;
+      }
+    }else{
+      return true;
+    }
+  }catch(e){
+    return false;
+  }
+
 });
