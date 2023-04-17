@@ -110,7 +110,6 @@ export const checkAlerts = functions.https.onCall(async (data, context) => {
   const res = await docref.get();
     if(res.exists){
       const d = res.data();
-      console.log(d);
       if(data.uid in d){
         return false;
       }else{
