@@ -63,6 +63,25 @@ export const getCustomClaim = functions.https.onCall(async (data, context) => {
   return operatorUser?.customClaims || "";
 });
 
+export const getUserDetails = functions.https.onCall(async(data, context) => {
+  const docID = data.municipality;
+  const uid = data.uid
+  try{
+    const docref = db.collection("users").doc(docID);
+    const doc = await docref.get();
+
+    if(!doc.exists){
+      return {};
+    }else{
+      const thedata:any = doc.data();
+      return thedata[`${uid}`]
+    }
+  }catch(e){
+    return e;
+  }
+});
+
+
 export const getUserAlerts = functions.https.onCall(async (data, context) => {
   const docRef = db.collection("topics");
   const all = [];
