@@ -162,7 +162,7 @@ export const getSelection = functions.https.onCall(async (data, context) => {
   if (res.exists) {
     const d = res.data();
     if (data?.uid in d) {
-      return d;
+      return d[data?.uid];
     }
   }
   return null;
