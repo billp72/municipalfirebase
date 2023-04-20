@@ -138,3 +138,29 @@ export const checkAlerts = functions.https.onCall(async (data, context) => {
       return true;
     }
 });
+
+export const getHistory = functions.https.onCall(async (data, context) => {
+  const database: any = db.collection("history");
+  const docref = database.doc(data.uid);
+  const res = await docref.get();
+  if(res.exists){
+    const d = res.data();
+    if(data?.historyID in d){
+      return d;
+    }else{
+      return [];
+    }
+  }
+});
+
+export const getSelection = functions.https.onCall(async (data, context) => {
+  const database: any = db.collection("topics");
+  const docref = database.doc(data.type);
+  const res = await docref.get();
+  if(res.exists){
+    const d = res.data();
+    if(data?.uid in d){
+      return d;
+    }
+  }
+});
