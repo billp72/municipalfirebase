@@ -63,24 +63,23 @@ export const getCustomClaim = functions.https.onCall(async (data, context) => {
   return operatorUser?.customClaims || "";
 });
 
-export const getUserDetails = functions.https.onCall(async(data, context) => {
+export const getUserDetails = functions.https.onCall(async (data, context) => {
   const docID = data.municipality;
-  const uid = data.uid
-  try{
+  const uid = data.uid;
+  try {
     const docref = db.collection("users").doc(docID);
     const doc = await docref.get();
 
-    if(!doc.exists){
+    if (!doc.exists) {
       return {};
-    }else{
-      const thedata:any = doc.data();
-      return thedata[`${uid}`]
+    } else {
+      const thedata: any = doc.data();
+      return thedata[`${uid}`];
     }
-  }catch(e){
+  } catch (e) {
     return e;
   }
 });
-
 
 export const getUserAlerts = functions.https.onCall(async (data, context) => {
   const docRef = db.collection("topics");
@@ -104,8 +103,8 @@ export const getUserAlerts = functions.https.onCall(async (data, context) => {
 export const addAlerts = functions.https.onCall(async (data, context) => {
   const database: any = db.collection("topics");
   const d = data.data;
-  try{
-    for(let i=0; i<d.length; i++){
+  try {
+    for (let i = 0; i < d.length; i++) {
       const docref = database.doc(d[i].type);
       docref.set(
         {
@@ -117,53 +116,52 @@ export const addAlerts = functions.https.onCall(async (data, context) => {
       );
     }
     return true;
-  }catch(e){
+  } catch (e) {
     return false;
   }
-  
 });
 
 export const checkAlerts = functions.https.onCall(async (data, context) => {
   const database: any = db.collection("topics");
   const docref = database.doc(data.type);
   const res = await docref.get();
-    if(res.exists){
-      const d = res.data();
-      if(data.uid in d){
-        return false;
-      }else{
-        return true;
-      }
-    }else{
+  if (res.exists) {
+    const d = res.data();
+    if (data.uid in d) {
+      return false;
+    } else {
       return true;
     }
+  } else {
+    return true;
+  }
 });
 
 export const getHistory = functions.https.onCall(async (data, context) => {
-  try{
-  const database: any = db.collection("history");
-  const docref = database.doc(data.uid);
-  const res = await docref.get();
-  if(res.exists){
-    const d = res.data();
-    if(data?.historyID in d){
-      return d;
-    }else{
-      return [];
+  try {
+    const database: any = db.collection("history");
+    const docref = database.doc(data.uid);
+    const res = await docref.get();
+    if (res.exists) {
+      const d = res.data();
+      if (data?.historyID in d) {
+        return d;
+      } else {
+        return [];
+      }
     }
+  } catch (e) {
+    return [];
   }
-}catch(e){
-  return []
-}
 });
 
 export const getSelection = functions.https.onCall(async (data, context) => {
   const database: any = db.collection("topics");
   const docref = database.doc(data.type);
   const res = await docref.get();
-  if(res.exists){
+  if (res.exists) {
     const d = res.data();
-    if(data?.uid in d){
+    if (data?.uid in d) {
       return d;
     }
   }
