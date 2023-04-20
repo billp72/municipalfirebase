@@ -140,6 +140,7 @@ export const checkAlerts = functions.https.onCall(async (data, context) => {
 });
 
 export const getHistory = functions.https.onCall(async (data, context) => {
+  try{
   const database: any = db.collection("history");
   const docref = database.doc(data.uid);
   const res = await docref.get();
@@ -151,6 +152,9 @@ export const getHistory = functions.https.onCall(async (data, context) => {
       return [];
     }
   }
+}catch(e){
+  return []
+}
 });
 
 export const getSelection = functions.https.onCall(async (data, context) => {
@@ -163,4 +167,5 @@ export const getSelection = functions.https.onCall(async (data, context) => {
       return d;
     }
   }
+  return null;
 });
