@@ -122,8 +122,24 @@ export const addAlerts = functions.https.onCall(async (data, context) => {
 });
 
 export const updateAlert = functions.https.onCall(async (data, context) => {
-  
-})
+  const database: any = db.collection("topics");
+  const docref = database.doc(data.data.type);
+  const res = await docref.get();
+  if (!res.exists) {
+    return;
+  }
+  const thedata = data.data;
+  const d = res.data();
+  const updatedFields = { ...d, ...thedata};
+  docref.set(
+    {
+      [data.uid]: {
+        updatedFields,
+      },
+    },
+    { merge: true }
+  );
+});
 
 export const checkAlerts = functions.https.onCall(async (data, context) => {
   const database: any = db.collection("topics");
