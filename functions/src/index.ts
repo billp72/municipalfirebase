@@ -101,12 +101,13 @@ export const getUserAlerts = functions.https.onCall(async (data, context) => {
 });
 
 export const addAlerts = functions.https.onCall(async (data, context) => {
+  const promises = []
   const database: any = db.collection("topics");
   const d = data.data;
   try {
     for (let i = 0; i < d.length; i++) {
       const docref = database.doc(d[i].type);
-      docref.set(
+      const sets = docref.set(
         {
           [d[i].uid]: {
             ...d[i],
@@ -114,7 +115,9 @@ export const addAlerts = functions.https.onCall(async (data, context) => {
         },
         { merge: true }
       );
+      promises.push(sets);
     }
+    await Promise.all(promises);
     return true;
   } catch (e) {
     return false;
@@ -129,17 +132,19 @@ export const updateAlert = functions.https.onCall(async (data, context) => {
     return;
   }
   const thedata = data.data;
-  //const d = res.data();
-  //const updatedFields = { ...d, ...thedata};
-  docref.update({
+  const d = res.data();
+  const content = d[data.uid];
+  const updatedFields = { ...content, ...thedata};
+  const p = await docref.update({
     [data.uid]: {
-      "delivery": thedata.delivery,
-      "frequency":thedata.frequency,
-      "mute": thedata.mute
+      ...updatedFields
     },
   });
 
-  
+  if(p){
+    return true;
+  }
+  return false;
 });
 
 export const checkAlerts = functions.https.onCall(async (data, context) => {
