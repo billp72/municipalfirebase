@@ -129,16 +129,17 @@ export const updateAlert = functions.https.onCall(async (data, context) => {
     return;
   }
   const thedata = data.data;
-  const d = res.data();
-  const updatedFields = { ...d, ...thedata};
-  docref.set(
-    {
-      [data.uid]: {
-        updatedFields,
-      },
+  //const d = res.data();
+  //const updatedFields = { ...d, ...thedata};
+  docref.update({
+    [data.uid]: {
+      "delivery": thedata.delivery,
+      "frequency":thedata.frequency,
+      "mute": thedata.mute
     },
-    { merge: true }
-  );
+  });
+
+  
 });
 
 export const checkAlerts = functions.https.onCall(async (data, context) => {
