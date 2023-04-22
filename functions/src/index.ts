@@ -121,6 +121,10 @@ export const addAlerts = functions.https.onCall(async (data, context) => {
   }
 });
 
+export const updateAlert = functions.https.onCall(async (data, context) => {
+  
+})
+
 export const checkAlerts = functions.https.onCall(async (data, context) => {
   const database: any = db.collection("topics");
   const docref = database.doc(data.type);
