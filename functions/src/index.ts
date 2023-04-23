@@ -6,7 +6,7 @@ const auth = admin.auth();
 const db = admin.firestore();
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
-//
+
 const administer = {
   admin: true,
   municipality: "",
@@ -101,7 +101,7 @@ export const getUserAlerts = functions.https.onCall(async (data, context) => {
 });
 
 export const addAlerts = functions.https.onCall(async (data, context) => {
-  const promises = []
+  const promises = [];
   const database: any = db.collection("topics");
   const d = data.data;
   try {
@@ -134,14 +134,14 @@ export const updateAlert = functions.https.onCall(async (data, context) => {
   const thedata = data.data;
   const d = res.data();
   const content = d[data.uid];
-  const updatedFields = { ...content, ...thedata};
+  const updatedFields = { ...content, ...thedata };
   const p = await docref.update({
     [data.uid]: {
-      ...updatedFields
+      ...updatedFields,
     },
   });
 
-  if(p){
+  if (p) {
     return true;
   }
   return false;
@@ -193,3 +193,55 @@ export const getSelection = functions.https.onCall(async (data, context) => {
   }
   return null;
 });
+
+export const PublishEvent = functions.https.onCall(async (data, context) => {
+  const muni = data.municipality;
+  const topic = data.topic;
+
+  const database: any = db.collection("users");
+  const docref = database.doc(muni);
+  const res1 = await docref.get();
+
+  if (res1.exists) {
+    const d = res1.data();
+    const users: any = [];
+    for (let i in d) {
+      users.push(d[i]);
+    }
+
+    const topics: any = db.collection("topics");
+    const docref = topics.doc(topic);
+    const res = await docref.get();
+    if (res.exists) {
+      const d2 = res.data();
+      for (let i = 0; i < users.length; i++) {
+        if (!users[i].admin) {
+          if (!!d2[users[i].uid]) {
+            const combined = {
+              email: users[i].email,
+              phone: users[i].phone,
+              push: users[i].push,
+              message: data.message,
+              ...d2[users[i].uid],
+            };
+            handleEvent(combined);
+          }
+        }
+      }
+    }
+  }
+});
+
+function handleEvent(event: any) {
+  switch (event.delivery) {
+    case "email":
+      console.log(event);
+      break;
+    case "sms":
+      console.log(event);
+      break;
+    case "text":
+      console.log(event);
+      break;
+  }
+}
