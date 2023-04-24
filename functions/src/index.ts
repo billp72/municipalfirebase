@@ -194,54 +194,77 @@ export const getSelection = functions.https.onCall(async (data, context) => {
   return null;
 });
 
+const emailTopics: any = {email:[]};
+const smsTopics: any = {sms:[]};
+const pushTopics: any = {push:[]};
+const topicPrimises:any = [];
+
 export const PublishEvent = functions.https.onCall(async (data, context) => {
   const muni = data.municipality;
   const topic = data.topic;
 
-  const database: any = db.collection("users");
-  const docref = database.doc(muni);
-  const res1 = await docref.get();
+  const users: any = db.collection("users");
+  const docref1 = users.doc(muni);
+  const res1 = await docref1.get();
 
-  if (res1.exists) {
-    const d = res1.data();
-    const users: any = [];
-    for (let i in d) {
-      users.push(d[i]);
-    }
+  const topics: any = db.collection("topics");
+  const docref2 = topics.doc(topic);
+  const res2 = await docref2.get();
 
-    const topics: any = db.collection("topics");
-    const docref = topics.doc(topic);
-    const res = await docref.get();
-    if (res.exists) {
-      const d2 = res.data();
-      for (let i = 0; i < users.length; i++) {
-        if (!users[i].admin) {
-          if (!!d2[users[i].uid]) {
-            const combined = {
-              email: users[i].email,
-              phone: users[i].phone,
-              push: users[i].push,
-              message: data.message,
-              ...d2[users[i].uid],
-            };
-            handleEvent(combined);
-          }
+  if (res1.exists && res2.exists) {
+    const d1 = res1.data();
+    const d2 = res2.data();
+    for (let i in d1) {
+      const user = d1[i];
+      if (!user.admin) {
+        const alert = d2[user.uid];
+        if (!!alert) {
+          const combined = {
+            email: user.email,
+            phone: user.phone,
+            push: user.push,
+            ...alert,
+          };
+          const val = sortEvent(combined);
+          topicPrimises.push(val);
         }
       }
     }
+    handleEvents(topicPrimises);
+    // if (res.exists) {
+    //   const d2 = res.data();
+    //   for (let i = 0; i < users.length; i++) {
+    //     if (!users[i].admin) {
+    //       if (!!d2[users[i].uid]) {
+    //         const combined = {
+    //           email: users[i].email,
+    //           phone: users[i].phone,
+    //           push: users[i].push,
+    //           message: data.message,
+    //           ...d2[users[i].uid],
+    //         };
+    //         handleEvent(combined);
+    //       }
+    //     }
+    //   }
+    // }
   }
 });
 
-function handleEvent(event: any) {
+function sortEvent(event: any) {
   switch (event.delivery) {
     case "email":
-      console.log(event);
-      break;
+      emailTopics.email.push(event);
+      return emailTopics;
     case "sms":
-      console.log(event);
-      break;
-    case "text":
-      console.log(event);
-      break;
+      smsTopics.sms.push(event);
+      return smsTopics;
+    case "push":
+      pushTopics.push.push(event);
+      return pushTopics;
   }
+}
+
+function handleEvents(results:any) {
+  console.log(results);
 }
