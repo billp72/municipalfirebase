@@ -194,14 +194,13 @@ export const getSelection = functions.https.onCall(async (data, context) => {
   return null;
 });
 
-const emailTopics: any = {email:[]};
-const smsTopics: any = {sms:[]};
-const pushTopics: any = {push:[]};
-const topicPrimises:any = [];
+
+const pushTopics:any = [];
 
 export const PublishEvent = functions.https.onCall(async (data, context) => {
   const muni = data.municipality;
   const topic = data.topic;
+  const payload = data.payload;
 
   const users: any = db.collection("users");
   const docref1 = users.doc(muni);
@@ -222,33 +221,37 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
           const combined = {
             email: user.email,
             phone: user.phone,
-            push: user.push,
+            token: user.token,
+            payload: payload,
             ...alert,
           };
           const val = sortEvent(combined);
-          topicPrimises.push(val);
+          if(val) pushTopics.push(val);
         }
       }
     }
-    handleEvents(topicPrimises);
-    
+    handleEvents(pushTopics);
   }
 });
 
 function sortEvent(event: any) {
   switch (event.delivery) {
     case "email":
-      emailTopics.email.push(event);
-      return emailTopics;
+      handleEvents(event);
+      return null;
     case "sms":
-      smsTopics.sms.push(event);
-      return smsTopics;
+      handleEvents(event);
+      return null;
     case "push":
-      pushTopics.push.push(event);
-      return pushTopics;
+      return (event);
+      
   }
 }
 
 function handleEvents(results:any) {
-  console.log(results);
+  if(Array.isArray(results)){
+    console.log(results);
+  }else{
+    console.log(results, "item");
+  }
 }
