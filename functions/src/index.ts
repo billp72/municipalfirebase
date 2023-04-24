@@ -231,23 +231,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
       }
     }
     handleEvents(topicPrimises);
-    // if (res.exists) {
-    //   const d2 = res.data();
-    //   for (let i = 0; i < users.length; i++) {
-    //     if (!users[i].admin) {
-    //       if (!!d2[users[i].uid]) {
-    //         const combined = {
-    //           email: users[i].email,
-    //           phone: users[i].phone,
-    //           push: users[i].push,
-    //           message: data.message,
-    //           ...d2[users[i].uid],
-    //         };
-    //         handleEvent(combined);
-    //       }
-    //     }
-    //   }
-    // }
+    
   }
 });
 
