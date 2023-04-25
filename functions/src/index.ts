@@ -217,7 +217,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
       const user = d1[i];
       if (!user.admin) {
         const alert = d2[user.uid];
-        if (!!alert) {
+        if (!!alert && !alert.mute) {
           const combined = {
             email: user.email,
             phone: user.phone,
