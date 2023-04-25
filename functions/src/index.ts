@@ -230,7 +230,9 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
         }
       }
     }
-    handleTopics(pushTopics);
+    if(pushTopics.length > 0){ 
+      handleTopics(pushTopics);
+    }
   }
 });
 
@@ -244,6 +246,8 @@ function sortTopics(event: any) {
       return null;
     case "push":
       return (event);
+    default:
+      return null;
       
   }
 }
