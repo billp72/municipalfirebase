@@ -225,22 +225,22 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             payload: payload,
             ...alert,
           };
-          const val = sortEvent(combined);
+          const val = sortTopics(combined);
           if(val) pushTopics.push(val);
         }
       }
     }
-    handleEvents(pushTopics);
+    handleTopics(pushTopics);
   }
 });
 
-function sortEvent(event: any) {
+function sortTopics(event: any) {
   switch (event.delivery) {
     case "email":
-      handleEvents(event);
+      handleTopics(event);
       return null;
     case "sms":
-      handleEvents(event);
+      handleTopics(event);
       return null;
     case "push":
       return (event);
@@ -248,7 +248,7 @@ function sortEvent(event: any) {
   }
 }
 
-function handleEvents(results:any) {
+function handleTopics(results:any) {
   if(Array.isArray(results)){
     console.log(results);
   }else{
