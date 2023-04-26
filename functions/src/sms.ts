@@ -5,7 +5,7 @@ const sms = (alert: any) => {
 
   const retry = async (
     msg: any,
-    alert: any,
+    event: any,
     retries = 3,
     backoff = 300
   ): Promise<any> => {
@@ -14,16 +14,16 @@ const sms = (alert: any) => {
         .create({
           body: msg,
           from: "+12398806109",
-          to: alert.phone,
+          to: event.phone,
         })
         .then((message: any) => {
           //TODO add to history db
-          return resolve(alert);
+          return resolve(event);
         })
         .catch((err: any) => {
           if (retries > 0) {
             setTimeout(() => {
-              return resolve(retry(msg, alert, retries - 1, backoff * 2));
+              return resolve(retry(msg, event, retries - 1, backoff * 2));
             }, backoff);
           } else {
             return reject(err);

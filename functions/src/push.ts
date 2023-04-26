@@ -3,21 +3,21 @@ import * as admin from "firebase-admin";
 
 const push = (alert: any) => {
   const notification = {
-    title: ``,
-    body: ``,
+    title: alert.title,
+    body: alert.body,
     sound: "default",
     badge: "1",
   };
 
   const retry = async (
     msg: any,
-    alert: any,
+    event: any,
     retries = 3,
     backoff = 300
   ): Promise<any> => {
     return admin
       .messaging()
-      .sendToDevice(alert.push, msg, { timeToLive: 86400, priority: "high" })
+      .sendToDevice(event.push, msg, { timeToLive: 86400, priority: "high" })
       .then(function (response) {
         //TODO: write to history db alert
         return true;
@@ -25,7 +25,7 @@ const push = (alert: any) => {
       .catch((e) => {
         if (retries > 0) {
           return setTimeout(() => {
-            return retry(msg, alert, retries - 1, backoff * 2);
+            return retry(msg, event, retries - 1, backoff * 2);
           }, backoff);
         } else {
           return e;

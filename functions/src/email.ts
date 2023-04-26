@@ -14,7 +14,7 @@ const email = (alert: any) => {
   });
 
   const retry = async (
-    alert: any,
+    event: any,
     retries = 3,
     backoff = 300
   ): Promise<any> => {
@@ -22,15 +22,15 @@ const email = (alert: any) => {
       transporter.sendMail(
         {
           from: '"Stock Alarm" <test@gege.com>',
-          to: alert.email,
-          subject: alert.title,
-          html: alert.body,
+          to: event.email,
+          subject: event.title,
+          html: event.body,
         },
         (err: any, info: any) => {
           if (err) {
             if (retries > 0) {
               setTimeout(() => {
-                return resolve(retry(alert, retries - 1, backoff * 2));
+                return resolve(retry(event, retries - 1, backoff * 2));
               }, backoff);
             } else {
               return reject(err);

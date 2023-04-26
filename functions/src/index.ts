@@ -200,7 +200,8 @@ export const getSelection = functions.https.onCall(async (data, context) => {
 export const PublishEvent = functions.https.onCall(async (data, context) => {
   const muni = data.municipality;
   const topic = data.topic;
-  const payload = data.payload;
+  const title = data.title;
+  const body = data.body;
 
   const users: any = db.collection("users");
   const docref1 = users.doc(muni);
@@ -222,7 +223,8 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             email: user.email,
             phone: user.phone,
             token: user.token,
-            payload: payload,
+            title: title,
+            body: body,
             ...alert,
           };
           sortTopics(combined);
