@@ -195,7 +195,7 @@ export const getSelection = functions.https.onCall(async (data, context) => {
 });
 
 
-const pushTopics:any = [];
+//const pushTopics:any = [];
 
 export const PublishEvent = functions.https.onCall(async (data, context) => {
   const muni = data.municipality;
@@ -225,14 +225,14 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             payload: payload,
             ...alert,
           };
-          const val = sortTopics(combined);
-          if(val) pushTopics.push(val);
+          sortTopics(combined);
+          //if(val) pushTopics.push(val);
         }
       }
     }
-    if(pushTopics.length > 0){ 
-      handleTopics(pushTopics);
-    }
+    // if(pushTopics.length > 0){ 
+    //   handleTopics(pushTopics);
+    // }
     return true;
   }
   return false;
@@ -247,7 +247,8 @@ function sortTopics(event: any) {
       handleTopics(event);
       return null;
     case "push":
-      return (event);
+      handleTopics(event);
+      return null;
     default:
       return null;
       
