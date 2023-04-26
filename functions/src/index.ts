@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import push from "./push";
 
 admin.initializeApp();
 const auth = admin.auth();
@@ -249,8 +250,7 @@ function sortTopics(event: any) {
       handleTopics(event);
       return null;
     case "push":
-      handleTopics(event);
-      return null;
+      return push(event);
     default:
       return null;
       
