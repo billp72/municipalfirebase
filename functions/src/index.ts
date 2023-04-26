@@ -233,7 +233,9 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
     if(pushTopics.length > 0){ 
       handleTopics(pushTopics);
     }
+    return true;
   }
+  return false;
 });
 
 function sortTopics(event: any) {
