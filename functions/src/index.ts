@@ -203,6 +203,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
   const topic = data.topic;
   const title = data.title;
   const body = data.body;
+  const admin_uid = data.admin_uid;
 
   const users: any = db.collection("users");
   const docref1 = users.doc(muni);
@@ -224,6 +225,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             email: user.email,
             phone: user.phone,
             token: user.token,
+            admin_uid: admin_uid,
             title: title,
             body: body,
             ...alert,
