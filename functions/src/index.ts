@@ -230,7 +230,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             body: body,
             ...alert,
           };
-          sortTopics(combined);
+          await sortTopics(combined);
         }
       }
     }
