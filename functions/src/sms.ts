@@ -7,7 +7,7 @@ const sms = (alert: ALERT) => {
 
   const retry = async (
     msg: any,
-    event: any,
+    event: ALERT,
     retries = 3,
     backoff = 300
   ): Promise<any> => {

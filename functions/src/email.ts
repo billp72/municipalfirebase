@@ -15,7 +15,7 @@ const email = (alert: ALERT) => {
   });
 
   const retry = async (
-    event: any,
+    event: ALERT,
     retries = 3,
     backoff = 300
   ): Promise<any> => {
