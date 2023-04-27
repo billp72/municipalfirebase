@@ -231,13 +231,9 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             ...alert,
           };
           sortTopics(combined);
-          //if(val) pushTopics.push(val);
         }
       }
     }
-    // if(pushTopics.length > 0){ 
-    //   handleTopics(pushTopics);
-    // }
     return true;
   }
   return false;
