@@ -23,7 +23,7 @@ const email = (alert: ALERT) => {
     return new Promise((resolve, reject) => {
       transporter.sendMail(
         {
-          from: '"Stock Alarm" <test@gege.com>',
+          from: '"Municipal Messaging" <test@gege.com>',
           to: event.email,
           subject: event.title,
           html: event.body,
