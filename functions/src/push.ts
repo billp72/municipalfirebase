@@ -12,13 +12,13 @@ const push = (alert: ALERT) => {
 
   const retry = async (
     msg: any,
-    event: any,
+    event: ALERT,
     retries = 3,
     backoff = 300
   ): Promise<any> => {
     return admin
       .messaging()
-      .sendToDevice(event.push, msg, { timeToLive: 86400, priority: "high" })
+      .sendToDevice(event.token, msg, { timeToLive: 86400, priority: "high" })
       .then(function (response) {
         //TODO: write to history db alert
         return true;
@@ -32,8 +32,8 @@ const push = (alert: ALERT) => {
           return e;
         }
       });
+    
   };
-  //TODO: check alert against date here
   return retry(notification, alert);
 };
 

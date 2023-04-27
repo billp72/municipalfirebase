@@ -215,8 +215,6 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
   const docref2 = topics.doc(topic);
   const res2 = await docref2.get();
 
-  let results;
-
   if (res1.exists && res2.exists) {
     const d1 = res1.data();
     const d2 = res2.data();
@@ -225,7 +223,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
       if (!user.admin) {
         const alert = d2[user.uid];
         if (!!alert && !alert.mute) {
-          const combined = {
+          const combined:ALERT = {
             email: user.email,
             phone: user.phone,
             token: user.token,
@@ -235,11 +233,11 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             ...alert,
           };
           const dc = dateCheck(combined);
-          results = await sortTopics(dc.check());
+          await sortTopics(dc.check());
         }
       }
     }
-    return results;
+    return true;
   }
   return false;
 });

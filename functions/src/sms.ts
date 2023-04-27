@@ -33,8 +33,7 @@ const sms = (alert: ALERT) => {
         });
     });
   };
-  //TODO check date
-  retry(notification, alert);
+  return retry(notification, alert);
 };
 
 export default sms;

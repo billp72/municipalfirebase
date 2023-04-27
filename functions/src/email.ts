@@ -45,8 +45,7 @@ const email = (alert: ALERT) => {
       );
     });
   };
-  //TODO check date
-  retry(alert);
+  return retry(alert);
 };
 
 export default email;
