@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
+import ALERT from "./alertInterface";
 
-const email = (alert: any) => {
+const email = (alert: ALERT) => {
   let transporter = nodemailer.createTransport({
     pool: true,
     maxConnections: 1,

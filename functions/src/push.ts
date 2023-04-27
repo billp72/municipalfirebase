@@ -1,7 +1,8 @@
 //import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import ALERT from "./alertInterface";
 
-const push = (alert: any) => {
+const push = (alert: ALERT) => {
   const notification = {
     title: alert.title,
     body: alert.body,

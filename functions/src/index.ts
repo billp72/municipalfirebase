@@ -1,6 +1,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import push from "./push";
+import dateCheck from "./dateCheck";
+import ALERT from "./alertInterface";
 
 admin.initializeApp();
 const auth = admin.auth();
@@ -213,6 +215,8 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
   const docref2 = topics.doc(topic);
   const res2 = await docref2.get();
 
+  let results;
+
   if (res1.exists && res2.exists) {
     const d1 = res1.data();
     const d2 = res2.data();
@@ -230,16 +234,17 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             body: body,
             ...alert,
           };
-          await sortTopics(combined);
+          const dc = dateCheck(combined);
+          results = await sortTopics(dc.check());
         }
       }
     }
-    return true;
+    return results;
   }
   return false;
 });
 
-function sortTopics(event: any) {
+function sortTopics(event: ALERT) {
   switch (event.delivery) {
     case "email":
       handleTopics(event);

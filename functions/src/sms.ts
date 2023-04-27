@@ -1,4 +1,6 @@
-const sms = (alert: any) => {
+import ALERT from "./alertInterface";
+
+const sms = (alert: ALERT) => {
   const notification = `${alert.title} ${alert.body}`;
   //TODO install twillio
   const messages = { create: (obj: any) => new Promise(() => null) };
