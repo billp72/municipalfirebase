@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import push from "./push";
+import email from "./email";
 import dateCheck from "./dateCheck";
 import ALERT from "./alertInterface";
 
@@ -245,8 +246,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
 function sortTopics(event: ALERT) {
   switch (event.delivery) {
     case "email":
-      handleTopics(event);
-      return null;
+      return email(event);
     case "sms":
       handleTopics(event);
       return null;
