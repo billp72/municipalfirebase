@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 import ALERT from "./alertInterface";
+import config from "./environments";
 
 const email = (alert: ALERT) => {
   let transporter = nodemailer.createTransport({
@@ -10,7 +11,7 @@ const email = (alert: ALERT) => {
     secure: false,
     requireTLS: true, // true for 465, false for other ports
     auth: {
-      //...config.email,
+      ...config.email,
     },
   });
 
