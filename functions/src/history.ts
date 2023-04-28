@@ -30,7 +30,7 @@ const adminHistory = (alert: ALERT, db:any) => {
   return child
     .set(
       {
-        [alert.type]: admin.firestore.FieldValue.arrayUnion({
+        all: admin.firestore.FieldValue.arrayUnion({
           desc: `${alert.title} ${alert.body}`,
           date: alert.date,
           type: alert.type,
