@@ -24,7 +24,7 @@ const email = (alert: ALERT, db:any) => {
     return new Promise((resolve, reject) => {
       transporter.sendMail(
         {
-          from: '"Municipal Messaging" <test@gege.com>',
+          from: `${event.type} for ${event.city} <test@gege.com>`,
           to: event.email,
           subject: event.title,
           html: event.body,

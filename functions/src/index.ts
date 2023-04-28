@@ -228,6 +228,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
         const alert = d2[user.uid];
         if (!!alert && !alert.mute) {
           const combined: ALERT = {
+            city: user.city,
             email: user.email,
             phone: user.phone,
             token: user.token,

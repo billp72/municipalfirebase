@@ -1,4 +1,5 @@
 interface ALERT {
+    city: string;
     email: string;
     phone: string;
     token: string;
