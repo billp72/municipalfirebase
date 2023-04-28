@@ -1,6 +1,7 @@
 import ALERT from "./alertInterface";
+import { myHistory } from "./history";
 
-const sms = (alert: ALERT) => {
+const sms = (alert: ALERT, db:any) => {
   const notification = `${alert.title} ${alert.body}`;
   //TODO install twillio
   const messages = { create: (obj: any) => new Promise(() => null) };
@@ -19,7 +20,7 @@ const sms = (alert: ALERT) => {
           to: event.phone,
         })
         .then((message: any) => {
-          //TODO add to history db
+          myHistory(event, db);
           return resolve(event);
         })
         .catch((err: any) => {

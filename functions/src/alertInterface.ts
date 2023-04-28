@@ -8,7 +8,6 @@ interface ALERT {
     date: string;
     delivery: string;
     frequency: string;
-    historyID?: string;
     type: string;
     uid: string;
   }

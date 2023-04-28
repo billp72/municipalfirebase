@@ -1,8 +1,9 @@
 const nodemailer = require("nodemailer");
 import ALERT from "./alertInterface";
 import config from "./environments";
+import { myHistory } from "./history";
 
-const email = (alert: ALERT) => {
+const email = (alert: ALERT, db:any) => {
   let transporter = nodemailer.createTransport({
     pool: true,
     maxConnections: 1,
@@ -38,9 +39,8 @@ const email = (alert: ALERT) => {
               return reject(err);
             }
           } else {
-            //TODO add to history
-            let msg = "completed";
-            return resolve(msg);
+            myHistory(event, db);
+            return resolve(event);
           }
         }
       );

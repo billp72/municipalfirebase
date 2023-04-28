@@ -1,8 +1,9 @@
 //import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import ALERT from "./alertInterface";
+import { myHistory } from "./history";
 
-const push = (alert: ALERT) => {
+const push = (alert: ALERT, db:any) => {
   const notification = {
     title: alert.title,
     body: alert.body,
@@ -20,8 +21,8 @@ const push = (alert: ALERT) => {
       .messaging()
       .sendToDevice(event.token, msg, { timeToLive: 86400, priority: "high" })
       .then(function (response) {
-        //TODO: write to history db alert
-        return true;
+        myHistory(event, db);
+        return event;
       })
       .catch((e) => {
         if (retries > 0) {

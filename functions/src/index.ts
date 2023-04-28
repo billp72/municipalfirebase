@@ -4,6 +4,7 @@ import push from "./push";
 import email from "./email";
 import dateCheck from "./dateCheck";
 import ALERT from "./alertInterface";
+import { adminHistory } from "./history";
 
 admin.initializeApp();
 const auth = admin.auth();
@@ -174,8 +175,9 @@ export const getHistory = functions.https.onCall(async (data, context) => {
     const res = await docref.get();
     if (res.exists) {
       const d = res.data();
-      if (data?.historyID in d) {
-        return d;
+      if (data?.type in d) {
+        if (d[data.type].length > 0) d[data.type].unshift({ date: {} });
+        return d[data.type];
       } else {
         return [];
       }
@@ -198,7 +200,6 @@ export const getSelection = functions.https.onCall(async (data, context) => {
   return null;
 });
 
-
 //const pushTopics:any = [];
 
 export const PublishEvent = functions.https.onCall(async (data, context) => {
@@ -207,6 +208,8 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
   const title = data.title;
   const body = data.body;
   const admin_uid = data.admin_uid;
+
+  let results;
 
   const users: any = db.collection("users");
   const docref1 = users.doc(muni);
@@ -224,7 +227,7 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
       if (!user.admin) {
         const alert = d2[user.uid];
         if (!!alert && !alert.mute) {
-          const combined:ALERT = {
+          const combined: ALERT = {
             email: user.email,
             phone: user.phone,
             token: user.token,
@@ -234,10 +237,11 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
             ...alert,
           };
           const dc = dateCheck(combined);
-          await sortTopics(dc.check());
+          results = await sortTopics(dc.check());
         }
       }
     }
+    adminHistory(results, db);
     return true;
   }
   return false;
@@ -246,22 +250,21 @@ export const PublishEvent = functions.https.onCall(async (data, context) => {
 function sortTopics(event: ALERT) {
   switch (event.delivery) {
     case "email":
-      return email(event);
+      return email(event, db);
     case "sms":
       handleTopics(event);
       return null;
     case "push":
-      return push(event);
+      return push(event, db);
     default:
       return null;
-      
   }
 }
 
-function handleTopics(results:any) {
-  if(Array.isArray(results)){
+function handleTopics(results: any) {
+  if (Array.isArray(results)) {
     console.log(results);
-  }else{
+  } else {
     console.log(results, "item");
   }
 }
