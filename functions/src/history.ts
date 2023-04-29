@@ -37,7 +37,7 @@ const myHistory = (alert: ALERT, db:any) => {
       const data = res.data();
       const content = data[alert.uid];
       const date = new Date().toISOString().slice(0, 10);
-      const updatedFields = { ...content, ...{date: formateDate(date)} };
+      const updatedFields = { ...content, ...{date: formateDate(date), start: true} };
       await topicsref.update({
         [alert.uid]: {
           ...updatedFields,

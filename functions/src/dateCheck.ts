@@ -35,7 +35,7 @@ const dateCheck = (alert:ALERT) => {
         diff = event - new Date(now.split(",")[0]).getTime(),
         differenceInDays = diff / (24 * 3600 * 1000);
 
-        if(Math.round(differenceInDays) === 1){
+        if(!a?.start || Math.round(differenceInDays) === 1){
             return a;
         }
     },
@@ -45,7 +45,7 @@ const dateCheck = (alert:ALERT) => {
         diff = event - new Date(now.split(",")[0]).getTime(),
         differenceInDays = diff / (24 * 3600 * 1000);
 
-        if(Math.round(differenceInDays) === 7){
+        if(!a?.start || Math.round(differenceInDays) === 7){
             return a;
         }
     },
@@ -55,7 +55,7 @@ const dateCheck = (alert:ALERT) => {
         diff = event - new Date(now.split(",")[0]).getTime(),
         differenceInDays = diff / (24 * 3600 * 1000);
 
-        if(Math.round(differenceInDays) === 31){
+        if(!a?.start || Math.round(differenceInDays) === 31){
             return a;
         }
     },

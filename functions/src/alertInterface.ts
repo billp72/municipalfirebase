@@ -11,6 +11,7 @@ interface ALERT {
     frequency: string;
     type: string;
     uid: string;
+    start?: boolean;
   }
 
   export default ALERT;
