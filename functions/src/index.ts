@@ -232,6 +232,7 @@ export const getCities = functions.https.onCall(async (data, context) => {
   const docref = await child.get();
   if (docref.exists) {
     const data = docref.data();
+    data?.all.unshift("Select city");
     return data?.all;
   } else {
     return ["Select city"];
@@ -244,6 +245,7 @@ export const getStates = functions.https.onCall(async (data, context) => {
   const docref = await child.get();
   if (docref.exists) {
     const data = docref.data();
+    data?.all.unshift("Select state");
     return data?.all;
   } else {
     return ["Select state"];
