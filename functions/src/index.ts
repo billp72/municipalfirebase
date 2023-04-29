@@ -27,16 +27,42 @@ export const adminLevel = functions.https.onCall(async (request, response) => {
   await auth.setCustomUserClaims(request.uid, administer);
   const user: any = await auth.getUser(request.uid);
   const municipal = user["customClaims"]["municipality"];
+
+  const colcity = db.collection("cities");
+  const city = colcity.doc("city");
+
+  const colstate = db.collection("states");
+  const state = colstate.doc("state");
+
   const docref = db.collection("users").doc(municipal);
   request.admin = true;
-  docref.set(
-    {
-      [request.uid]: {
-        ...request,
+  docref
+    .set(
+      {
+        [request.uid]: {
+          ...request,
+        },
       },
-    },
-    { merge: true }
-  );
+      { merge: true }
+    )
+    .then(() => {
+      return city
+        .set(
+          {
+            ["all"]: admin.firestore.FieldValue.arrayUnion(request.city),
+          },
+          { merge: true }
+        )
+        .then(() => {
+          return state.set(
+            {
+              ["all"]: admin.firestore.FieldValue.arrayUnion(request.state),
+            },
+            { merge: true }
+          );
+        })
+        .catch((err: any) => console.log(err + " city/state not set"));
+    });
 
   return user;
 });
@@ -204,11 +230,11 @@ export const getCities = functions.https.onCall(async (data, context) => {
   const col = db.collection("cities");
   const child = col.doc("city");
   const docref = await child.get();
-  if(docref.exists){
+  if (docref.exists) {
     const data = docref.data();
     return data?.all;
-  }else{
-    return [];
+  } else {
+    return ["Select city"];
   }
 });
 
@@ -216,21 +242,14 @@ export const getStates = functions.https.onCall(async (data, context) => {
   const col = db.collection("states");
   const child = col.doc("state");
   const docref = await child.get();
-  if(docref.exists){
+  if (docref.exists) {
     const data = docref.data();
     return data?.all;
-  }else{
-    return []
+  } else {
+    return ["Select state"];
   }
 });
 
-export const setCities = functions.https.onCall(async (data, context) => {
-
-});
-
-export const setStates = functions.https.onCall(async (data, context) => {
-
-});
 
 export const PublishEvent = functions.https.onCall(async (data, context) => {
   const muni = data.municipality;
