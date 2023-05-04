@@ -304,19 +304,11 @@ function sortTopics(event: ALERT) {
     case "email":
       return email(event, db);
     case "sms":
-      handleTopics(event);
+      console.log(event);
       return null;
     case "push":
       return push(event, db);
     default:
       return null;
-  }
-}
-
-function handleTopics(results: any) {
-  if (Array.isArray(results)) {
-    console.log(results);
-  } else {
-    console.log(results, "item");
   }
 }
