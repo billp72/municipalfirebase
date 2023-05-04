@@ -4,6 +4,11 @@ function hasKey<O extends Object>(obj: O, key: keyof any): key is keyof O {
     return key in obj;
   }
 
+  const getWeek = (date: Date) => {
+    const janFirst = new Date(date.getFullYear(), 0, 1);
+    return Math.ceil((((date.getTime() - janFirst.getTime()) / 86400000) + janFirst.getDay() + 1) / 7);
+  }
+
   interface DATECHECKER {
     all: (a: ALERT) => ALERT;
     daily: (a: ALERT) => ALERT | any;
@@ -40,22 +45,18 @@ const dateCheck = (alert:ALERT) => {
         }
     },
     weekly: function (a:ALERT):ALERT | any {
-        let event = new Date(formateDate(a.date)).getTime(),
-        now = createDate(new Date()),
-        diff = event - new Date(now.split(",")[0]).getTime(),
-        differenceInDays = diff / (24 * 3600 * 1000);
+        let event = new Date(formateDate(a.date));
+        let now = new Date();
 
-        if(!a?.start || (Math.round(differenceInDays) >= 7)){
+        if(!a?.start || (getWeek(event) != getWeek(now))){
             return a;
         }
     },
     monthly: function (a:ALERT):ALERT | any {
-        let event = new Date(formateDate(a.date)).getTime(),
-        now = createDate(new Date()),
-        diff = event - new Date(now.split(",")[0]).getTime(),
-        differenceInDays = diff / (24 * 3600 * 1000);
+        let event = new Date(formateDate(a.date)).getMonth();
+        let now = new Date().getMonth();
 
-        if(!a?.start || (Math.round(differenceInDays) >= 31)){
+        if(!a?.start || (event != now)){
             return a;
         }
     },
