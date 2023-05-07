@@ -23,10 +23,12 @@ const resident = {
 };
 
 export const checkAdmin = functions.https.onCall(async (request, response) => {
-  const docref = db.collection("users").doc(request.municipality);
+  const mun = request.municipality
+  const docref = db.collection("users").doc(mun);
   const doc = await docref.get();
-  return doc.exists;
+  return doc.exists
 });
+
 export const adminLevel = functions.https.onCall(async (request, response) => {
   administer.municipality = request.municipality;
 
