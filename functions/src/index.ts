@@ -36,34 +36,42 @@ export const adminLevel = functions.https.onCall(async (request, response) => {
 
   const docref = db.collection("users").doc(municipal);
   request.admin = true;
-  docref
-    .set(
-      {
-        [request.uid]: {
-          ...request,
-        },
-      },
-      { merge: true }
-    )
-    .then(() => {
-      return city
+  try {
+    const doc = await docref.get();
+    if (!doc.exists) {
+      docref
         .set(
           {
-            ["all"]: admin.firestore.FieldValue.arrayUnion(request.city),
+            [request.uid]: {
+              ...request,
+            },
           },
           { merge: true }
         )
         .then(() => {
-          return state.set(
-            {
-              ["all"]: admin.firestore.FieldValue.arrayUnion(request.state),
-            },
-            { merge: true }
-          );
-        })
-        .catch((err: any) => console.log(err + " city/state not set"));
-    });
-
+          return city
+            .set(
+              {
+                ["all"]: admin.firestore.FieldValue.arrayUnion(request.city),
+              },
+              { merge: true }
+            )
+            .then(() => {
+              return state.set(
+                {
+                  ["all"]: admin.firestore.FieldValue.arrayUnion(request.state),
+                },
+                { merge: true }
+              );
+            })
+            .catch((err: any) => console.log(err + " city/state not set"));
+        });
+    } else {
+      return "this account already exists";
+    }
+  } catch (error) {
+    return error;
+  }
   return user;
 });
 
@@ -251,7 +259,6 @@ export const getStates = functions.https.onCall(async (data, context) => {
     return ["Select state"];
   }
 });
-
 
 export const PublishEvent = functions.https.onCall(async (data, context) => {
   const muni = data.municipality;
