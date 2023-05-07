@@ -21,6 +21,12 @@ const resident = {
   admin: false,
   municipality: "",
 };
+
+export const checkAdmin = functions.https.onCall(async (request, response) => {
+  const docref = db.collection("users").doc(request.municipality);
+  const doc = await docref.get();
+  return doc.exists;
+});
 export const adminLevel = functions.https.onCall(async (request, response) => {
   administer.municipality = request.municipality;
 
@@ -37,8 +43,6 @@ export const adminLevel = functions.https.onCall(async (request, response) => {
   const docref = db.collection("users").doc(municipal);
   request.admin = true;
   try {
-    const doc = await docref.get();
-    if (!doc.exists) {
       docref
         .set(
           {
@@ -66,11 +70,9 @@ export const adminLevel = functions.https.onCall(async (request, response) => {
             })
             .catch((err: any) => console.log(err + " city/state not set"));
         });
-    } else {
-      return "this account already exists";
-    }
+   
   } catch (error) {
-    return error;
+    return {data: null};
   }
   return user;
 });
