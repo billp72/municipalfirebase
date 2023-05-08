@@ -74,7 +74,7 @@ export const adminLevel = functions.https.onCall(async (request, response) => {
         });
    
   } catch (error) {
-    return {data: null};
+    return null;
   }
   return user;
 });
