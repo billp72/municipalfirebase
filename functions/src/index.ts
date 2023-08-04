@@ -251,6 +251,19 @@ export const getCities = functions.https.onCall(async (data, context) => {
   }
 });
 
+export const deleteAlarm = functions.https.onCall(async (data, context) => {
+  const col = db.collection("topics");
+  const child = col.doc(data.topic);
+  return child.set(
+    {
+      [data.uid]: admin.firestore.FieldValue.delete(),
+    },
+    { merge: true }
+  ).then(() => {
+    return true;
+  })
+});
+
 export const getStates = functions.https.onCall(async (data, context) => {
   const col = db.collection("states");
   const child = col.doc("state");
